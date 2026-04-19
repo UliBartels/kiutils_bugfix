@@ -23,7 +23,7 @@ from kiutils.items.common import Image, PageSettings, TitleBlock
 from kiutils.items.schitems import *
 from kiutils.symbol import Symbol
 from kiutils.utils import sexpr
-from kiutils.misc.config import KIUTILS_CREATE_NEW_GENERATOR_STR, KIUTILS_CREATE_NEW_VERSION_STR
+from kiutils.misc.config import KIUTILS_CREATE_NEW_GENERATOR_STR, KIUTILS_CREATE_NEW_VERSION_STR, KIUTILS_CREATE_NEW_GENERATOR_VERSION_STR
 
 @dataclass
 class Schematic():
@@ -38,6 +38,9 @@ class Schematic():
 
     generator: str = KIUTILS_CREATE_NEW_GENERATOR_STR
     """The ``generator`` token attribute defines the program used to write the file"""
+    
+    generator_version: str = KIUTILS_CREATE_NEW_GENERATOR_VERSION_STR
+    """The ``generator_version`` token attribute defines the version of the program used to write the file"""
 
     uuid: Optional[str] = None
     """The optional ``uuid`` defines the universally unique identifier. Defaults to ``None.``"""
@@ -138,6 +141,7 @@ class Schematic():
         for item in exp:
             if item[0] == 'version': object.version = item[1]
             if item[0] == 'generator': object.generator = item[1]
+            if item[0] == 'generator_version': object.generator_version = item[1]
             if item[0] == 'uuid': object.uuid = item[1]
             if item[0] == 'paper': object.paper = PageSettings().from_sexpr(item)
             if item[0] == 'title_block': object.titleBlock = TitleBlock().from_sexpr(item)
@@ -204,7 +208,8 @@ class Schematic():
         """
         schematic = cls(
             version = KIUTILS_CREATE_NEW_VERSION_STR,
-            generator = KIUTILS_CREATE_NEW_GENERATOR_STR
+            generator = KIUTILS_CREATE_NEW_GENERATOR_STR,
+            genrator_version = KIUTILS_CREATE_NEW_GENERATOR_VERSION_STR
         )
         schematic.sheetInstances.append(HierarchicalSheetInstance(instancePath='/', page='1'))
         return schematic
@@ -242,9 +247,9 @@ class Schematic():
         indents = ' '*indent
         endline = '\n' if newline else ''
 
-        expression =  f'{indents}(kicad_sch (version {self.version}) (generator {self.generator})\n'
+        expression =  f'{indents}(kicad_sch (version {self.version}) (generator "{self.generator}") (generator_version "{self.generator_version}")\n'
         if self.uuid is not None:
-            expression += f'\n{indents}  (uuid {self.uuid})\n\n'
+            expression += f'\n{indents}  (uuid "{self.uuid}")\n\n'
         expression += f'{self.paper.to_sexpr(indent+2)}'
         if self.titleBlock is not None:
             expression += f'\n{self.titleBlock.to_sexpr(indent+2)}'

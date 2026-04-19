@@ -84,7 +84,7 @@ class Junction():
         """
         indents = ' '*indent
         endline = '\n' if newline else ''
-        uuid = f'\n{indents}  (uuid {self.uuid})\n' if self.uuid is not None else ''
+        uuid = f'\n{indents}  (uuid "{self.uuid})"\n' if self.uuid is not None else ''
         expression =  f'{indents}(junction (at {self.position.X} {self.position.Y}) (diameter {self.diameter}) {self.color.to_sexpr()}{uuid}{indents}){endline}'
         return expression
 
@@ -140,7 +140,7 @@ class NoConnect():
         """
         indents = ' '*indent
         endline = '\n' if newline else ''
-        uuid = f' (uuid {self.uuid})' if self.uuid is not None else ''
+        uuid = f' (uuid "{self.uuid}")' if self.uuid is not None else ''
 
         return f'{indents}(no_connect (at {self.position.X} {self.position.Y}){uuid}){endline}'
 
@@ -209,7 +209,7 @@ class BusEntry():
         expression =  f'{indents}(bus_entry (at {self.position.X} {self.position.Y}) (size {self.size.X} {self.size.Y})\n'
         expression += self.stroke.to_sexpr(indent+2)
         if self.uuid is not None:
-            expression += f'{indents}  (uuid {self.uuid})\n'
+            expression += f'{indents}  (uuid "{self.uuid}")\n'
         expression += f'{indents}){endline}'
         return expression
 
@@ -349,7 +349,7 @@ class Connection():
         expression =  f'{indents}({self.type} (pts{points})\n'
         expression += self.stroke.to_sexpr(indent+2)
         if self.uuid is not None:
-            expression += f'{indents}  (uuid {self.uuid})\n'
+            expression += f'{indents}  (uuid "{self.uuid}")\n'
         expression += f'{indents}){endline}'
         return expression
 
@@ -420,7 +420,7 @@ class PolyLine():
         expression =  f'{indents}(polyline (pts{points})\n'
         expression += self.stroke.to_sexpr(indent+2)
         if self.uuid is not None:
-            expression += f'{indents}  (uuid {self.uuid})\n'
+            expression += f'{indents}  (uuid "{self.uuid}")\n'
         expression += f'{indents}){endline}'
         return expression
 
@@ -497,7 +497,7 @@ class Text():
         expression += f'(at {self.position.X} {self.position.Y}{posA})\n'
         expression += self.effects.to_sexpr(indent+2)
         if self.uuid is not None:
-            expression += f'{indents}  (uuid {self.uuid})\n'
+            expression += f'{indents}  (uuid "{self.uuid}")\n'
         expression += f'{indents}){endline}'
         return expression
 
@@ -583,7 +583,7 @@ class TextBox():
         expression += self.fill.to_sexpr(indent+2)
         expression += self.effects.to_sexpr(indent+2)
         if self.uuid is not None:
-            expression += f'{indents}  (uuid {self.uuid})\n'
+            expression += f'{indents}  (uuid "{self.uuid}")\n'
         expression += f'{indents}){endline}'
         return expression
 
@@ -659,7 +659,7 @@ class LocalLabel():
         expression =  f'{indents}(label "{dequote(self.text)}" (at {self.position.X} {self.position.Y}{posA}){fieldsAutoplaced}\n'
         expression += self.effects.to_sexpr(indent+2)
         if self.uuid is not None:
-            expression += f'{indents}  (uuid {self.uuid})\n'
+            expression += f'{indents}  (uuid "{self.uuid}")\n'
         expression += f'{indents}){endline}'
         return expression
 
@@ -745,7 +745,7 @@ class GlobalLabel():
         expression =  f'{indents}(global_label "{dequote(self.text)}" (shape {self.shape}) (at {self.position.X} {self.position.Y}{posA}){fa}\n'
         expression += self.effects.to_sexpr(indent+2)
         if self.uuid is not None:
-            expression += f'{indents}  (uuid {self.uuid})\n'
+            expression += f'{indents}  (uuid "{self.uuid}")\n'
         for property in self.properties:
             expression += property.to_sexpr(indent+2)
         expression += f'{indents}){endline}'
@@ -829,7 +829,7 @@ class HierarchicalLabel():
         expression =  f'{indents}(hierarchical_label "{dequote(self.text)}" (shape {self.shape}) (at {self.position.X} {self.position.Y}{posA}){fieldsAutoplaced}\n'
         expression += self.effects.to_sexpr(indent+2)
         if self.uuid is not None:
-            expression += f'{indents}  (uuid {self.uuid})\n'
+            expression += f'{indents}  (uuid "{self.uuid}")\n'
         expression += f'{indents}){endline}'
         return expression
 
@@ -1127,7 +1127,7 @@ class SchematicSymbol():
         expression =  f'{indents}(symbol{lib_name} (lib_id "{dequote(self.libId)}") (at {self.position.X} {self.position.Y}{posA}){mirror}{unit}\n'
         expression += f'{indents}  (in_bom {inBom}) (on_board {onBoard}){dnp}{fa}\n'
         if self.uuid:
-            expression += f'{indents}  (uuid {self.uuid})\n'
+            expression += f'{indents}  (uuid "{self.uuid}")\n'
         for property in self.properties:
             expression += property.to_sexpr(indent+2)
         for number, uuid in self.pins.items():
@@ -1213,7 +1213,7 @@ class HierarchicalPin():
         expression =  f'{indents}(pin "{dequote(self.name)}" {self.connectionType} (at {self.position.X} {self.position.Y}{posA})\n'
         expression += self.effects.to_sexpr(indent+2)
         if self.uuid is not None:
-            expression += f'{indents}  (uuid {self.uuid})\n'
+            expression += f'{indents}  (uuid "{self.uuid}")\n'
         expression += f'{indents}){endline}'
         return expression
 
@@ -1449,7 +1449,7 @@ class HierarchicalSheet():
         expression += self.stroke.to_sexpr(indent+2)
         expression += f'{indents}  (fill {self.fill.to_sexpr()})\n'
         if self.uuid is not None:
-            expression += f'{indents}  (uuid {self.uuid})\n'
+            expression += f'{indents}  (uuid "{self.uuid}")\n'
         expression += self.sheetName.to_sexpr(indent+2)
         expression += self.fileName.to_sexpr(indent+2)
         for p in self.properties:
@@ -1665,7 +1665,7 @@ class Rectangle():
         expression += self.stroke.to_sexpr(indent+2)
         expression += self.fill.to_sexpr(indent+2)
         if self.uuid is not None:
-            expression += f'{indents}  (uuid {self.uuid})\n'
+            expression += f'{indents}  (uuid "{self.uuid}")\n'
         expression += f'{indents}){endline}'
         return expression
 
@@ -1745,7 +1745,7 @@ class Arc():
         expression += self.stroke.to_sexpr(indent+2)
         expression += self.fill.to_sexpr(indent+2)
         if self.uuid is not None:
-            expression += f'{indents}  (uuid {self.uuid})\n'
+            expression += f'{indents}  (uuid "{self.uuid}")\n'
         expression += f'{indents}){endline}'
         return expression
 
@@ -1821,7 +1821,7 @@ class Circle():
         expression += self.stroke.to_sexpr(indent+2)
         expression += self.fill.to_sexpr(indent+2)
         if self.uuid is not None:
-            expression += f'{indents}  (uuid {self.uuid})\n'
+            expression += f'{indents}  (uuid "{self.uuid}")\n'
         expression += f'{indents}){endline}'
         return expression
     
@@ -1912,7 +1912,7 @@ class NetclassFlag():
         expression =  f'{indents}(netclass_flag "{dequote(self.text)}" (length {self.length}) (shape {self.shape}) (at {self.position.X} {self.position.Y}{posA}){fa}\n'
         expression += self.effects.to_sexpr(indent+2)
         if self.uuid is not None:
-            expression += f'{indents}  (uuid {self.uuid})\n'
+            expression += f'{indents}  (uuid "{self.uuid}")\n'
         for property in self.properties:
             expression += property.to_sexpr(indent+2)
         expression += f'{indents}){endline}'

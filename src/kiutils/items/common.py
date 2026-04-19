@@ -9,6 +9,9 @@ License identifier:
 
 Major changes:
     02.02.2022 - created
+    
+Minor changes:
+    19APR2026 - Added support for hide, show_name and do_not_autoplace field in object properties
 
 Documentation taken from:
     https://dev-docs.kicad.org/en/file-formats/sexpr-intro/index.html#_common_syntax
@@ -829,6 +832,12 @@ class Property():
     labels.
 
     Available since KiCad v7"""
+    
+    doNotAutoplace: Optional[bool] = None
+    """The ``do_not_autoplace`` token [TODO: I have not idea what this setting does and Google didn't help either. If someone knows, please update. KiCad does add it by default to every property as of at least version 10.0.01] """
+    
+    hide: Optional[bool] = False
+    """The ``hide`` token defines if the property value is visibly shown. Used for component values, manufacturer names, etc."""
 
     @classmethod
     def from_sexpr(cls, exp: list) -> Property:
@@ -857,7 +866,9 @@ class Property():
             if item[0] == 'id': object.id = item[1]
             if item[0] == 'at': object.position = Position().from_sexpr(item)
             if item[0] == 'effects': object.effects = Effects().from_sexpr(item)
-            if item[0] == 'show_name': object.showName = True
+            if item[0] == 'show_name': object.showName = True if item[1] == 'yes' else False
+            if item[0] == 'hide': object.hide = True if item[1] == 'yes' else False
+            if item[0] == 'do_not_autoplace': object.do_not_autoplace = True if item[1] == 'yes' else False
         return object
 
     def to_sexpr(self, indent: int = 4, newline: bool = True) -> str:
@@ -874,10 +885,12 @@ class Property():
         endline = '\n' if newline else ''
 
         posA = f' {self.position.angle}' if self.position.angle is not None else ''
-        id = f' (id {self.id})' if self.id is not None else ''
-        sn = ' (show_name)' if self.showName else ''
+        id   = f' (id {self.id})' if self.id is not None else ''
+        sn   = f' (show_name {"yes" if self.showName else "no"})'
+        hide = f' (hide {"yes" if self.hide else "no"})' if self.hide is not None else ''
+        dna  = f' (do_not_autoplace {"yes" if self.doNotAutoplace else "no"})' if self.doNotAutoplace is not None else ''
 
-        expression =  f'{indents}(property "{dequote(self.key)}" "{dequote(self.value)}"{id} (at {self.position.X} {self.position.Y}{posA}){sn}'
+        expression =  f'{indents}(property "{dequote(self.key)}" "{dequote(self.value)}"{id} (at {self.position.X} {self.position.Y}{posA}){hide}{sn}{dna}'
         if self.effects is not None:
             expression += f'\n{self.effects.to_sexpr(indent+2)}'
             expression += f'{indents}){endline}'
@@ -1152,7 +1165,7 @@ class Image():
 
         expression =  f'{indents}(image (at {self.position.X} {self.position.Y}){layer}{scale}\n'
         if self.uuid is not None:
-            expression += f'{indents}  (uuid {self.uuid})\n'
+            expression += f'{indents}  (uuid "{self.uuid})"\n'
         expression += f'{indents}  (data\n'
         for b64part in self.data:
             expression += f'{indents}    {b64part}\n'
