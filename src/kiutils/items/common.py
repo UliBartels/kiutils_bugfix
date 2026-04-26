@@ -1165,7 +1165,7 @@ class Image():
 
         expression =  f'{indents}(image (at {self.position.X} {self.position.Y}){layer}{scale}\n'
         if self.uuid is not None:
-            expression += f'{indents}  (uuid "{self.uuid})"\n'
+            expression += f'{indents}  (uuid "{self.uuid}")\n'
         expression += f'{indents}  (data\n'
         for b64part in self.data:
             expression += f'{indents}    {b64part}\n'

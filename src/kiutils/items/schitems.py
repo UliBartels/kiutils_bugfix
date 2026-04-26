@@ -84,7 +84,7 @@ class Junction():
         """
         indents = ' '*indent
         endline = '\n' if newline else ''
-        uuid = f'\n{indents}  (uuid "{self.uuid})"\n' if self.uuid is not None else ''
+        uuid = f'\n{indents}  (uuid "{self.uuid}")\n' if self.uuid is not None else ''
         expression =  f'{indents}(junction (at {self.position.X} {self.position.Y}) (diameter {self.diameter}) {self.color.to_sexpr()}{uuid}{indents}){endline}'
         return expression
 
